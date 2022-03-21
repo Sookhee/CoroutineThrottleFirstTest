@@ -2,12 +2,12 @@ package com.github.sookhee.coroutinethrottlefirst
 
 import android.util.Log
 import android.view.View
+import com.github.sookhee.coroutinethrottlefirst.MainActivity.Companion.THROTTLE_DURATION
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 
 /**
@@ -34,10 +34,30 @@ fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> = flow {
     collect { upstream ->
         val currentTime = System.currentTimeMillis()
         val mayEmit = currentTime - lastEmissionTime > windowDuration
-        if (mayEmit)
-        {
+        if (mayEmit) {
             lastEmissionTime = currentTime
             emit(upstream)
         }
     }
+}
+
+fun View.setClicks(windowDuration: Long = THROTTLE_DURATION, onClick: () -> Unit) {
+    flow {
+        var lastEmissionTime = 0L
+        callbackFlow {
+            setOnClickListener {
+                trySend(Unit)
+            }
+            awaitClose { setOnClickListener(null) } // 초기화
+        }.collect { upstream ->
+            val currentTime = System.currentTimeMillis()
+            val mayEmit = currentTime - lastEmissionTime > windowDuration
+            if (mayEmit) {
+                lastEmissionTime = currentTime
+                emit(upstream)
+            }
+        }
+    }.onEach {
+        onClick.invoke()
+    }.launchIn(GlobalScope)
 }

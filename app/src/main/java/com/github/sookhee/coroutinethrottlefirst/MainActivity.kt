@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         val button1 = findViewById<Button>(R.id.btnTest1)
         val button2 = findViewById<Button>(R.id.btnTest2)
+        val button3 = findViewById<Button>(R.id.btnTest3)
 
         button1.onClick {
             Log.i("[TAG]", "CLICK")
@@ -30,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         button2.clicks().throttleFirst(1000)
             .onEach { Log.i("[TAG]", "throttleFirst") }
             .launchIn(GlobalScope)
+
+        button3.setClicks(5000) {
+            Log.i("[TAG]", "setClicks: ${System.currentTimeMillis()}")
+        }
     }
 
     private fun View.onClick(action: suspend (View) -> Unit) {
@@ -41,5 +46,9 @@ class MainActivity : AppCompatActivity() {
         setOnClickListener {
             event.trySend(it).isSuccess
         }
+    }
+
+    companion object {
+        const val THROTTLE_DURATION = 1000L
     }
 }
