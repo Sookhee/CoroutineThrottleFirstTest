@@ -8,23 +8,17 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btnTest1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coroutine Actor" />
-
-    <Button
-        android:id="@+id/btnTest2"
+        android:id="@+id/btnThrottleFirst"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Coroutine Extension" />
+        android:text="Throttle First Test" />
 
-    <Button
-        android:id="@+id/btnTest3"
+    <TextView
+        android:id="@+id/tvCount"
+        android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="clicks Extension" />
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
